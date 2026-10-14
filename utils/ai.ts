@@ -1,18 +1,10 @@
 import 'server-only'
 
 import OpenAI from "openai";
-import { AI_MODELS, type AI_MODEL } from './models'
+import { models, AI_MODELS, type AI_MODEL } from './models'
 
 export type { AI_MODEL } from './models'
 
-// OpenRouter model slugs (provider/model)
-const models: Record<AI_MODEL, string> = {
-    ChatGPT: "openai/gpt-6-luna",
-    Gemini: "google/gemini-3.5-flash-lite",
-    Claude: "anthropic/claude-haiku-5.5",
-    Grok: "x-ai/grok-4.3",
-    DeekSeek: "deepseek/deepseek-v4-flash",
-}
 
 const apiKey = process.env.OPEN_ROUTER_API_KEY
 
@@ -64,7 +56,7 @@ Rules:
 - An emoji-only message is fine now and then.
 - Respond to what others said, by name if it helps. Add something new instead of just agreeing or repeating.
 - Do not say goodbye or try to wrap up the conversation.
-- Talk like carefree young generation: relaxed, fun, expressive
+- Talk like carefree young generation: relaxed, fun, expressive, emojis
 
 ${
   history?.length

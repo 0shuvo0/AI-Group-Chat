@@ -191,3 +191,149 @@ body{
   cursor: pointer;
   box-shadow: 0 5px 10px rgba(0, 0, 0, .3);
 }
+
+/* ---- model loader pill (floats at the top, doesn't affect layout) ---- */
+.rc-loader-wrap {
+  position: sticky;
+  top: 0;
+  height: 0;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;           /* was stretching the pill to 0px tall */
+  pointer-events: none;
+}
+.rc-loader {
+  box-sizing: border-box;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+  width: max-content;
+  min-width: 190px;
+  max-width: calc(100% - 24px);
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #fff;
+  color: #2b2b3a;
+  font-size: 13px;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(30, 30, 60, 0.14);
+}
+.rc-loader-text {
+  overflow: hidden;
+  text-overflow: ellipsis;           /* safety net on very narrow screens */
+}
+.rc-loader-bar {
+  display: block;
+  flex-shrink: 0;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #e6e6f0;
+  overflow: hidden;
+}
+.rc-loader-fill {
+  display: block;
+  height: 100%;
+  background: #2b8cff;
+  transition: width 0.2s ease;
+}
+
+/* ---- "speaking" placeholder bubble ---- */
+.rc-voice {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  min-width: 64px;
+  min-height: 44px;
+  padding: 10px 16px;
+}
+.rc-wave {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+}
+.rc-wave i {
+  display: block;
+  width: 4px;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--c, #2b8cff);
+  transform-origin: center;
+  transform: scaleY(0.3);
+}
+
+/* generating: soft, staggered shimmer instead of everything pulsing together */
+.rc-voice[data-phase='generating'] .rc-wave i {
+  transform: scaleY(0.25);
+  opacity: 0.4;
+  animation: rc-pulse 1.2s ease-in-out infinite;
+}
+.rc-voice[data-phase='generating'] .rc-wave i:nth-child(1) { animation-delay: 0s; }
+.rc-voice[data-phase='generating'] .rc-wave i:nth-child(2) { animation-delay: 0.15s; }
+.rc-voice[data-phase='generating'] .rc-wave i:nth-child(3) { animation-delay: 0.3s; }
+.rc-voice[data-phase='generating'] .rc-wave i:nth-child(4) { animation-delay: 0.45s; }
+.rc-voice[data-phase='generating'] .rc-wave i:nth-child(5) { animation-delay: 0.6s; }
+
+/* playing: each bar has its own rhythm (different keyframes, durations, offsets) */
+.rc-voice[data-phase='playing'] .rc-wave i {
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+.rc-voice[data-phase='playing'] .rc-wave i:nth-child(1) { animation-name: rc-bounce-a; animation-duration: 0.9s;  animation-delay: -0.3s; }
+.rc-voice[data-phase='playing'] .rc-wave i:nth-child(2) { animation-name: rc-bounce-b; animation-duration: 0.67s; animation-delay: -0.5s; }
+.rc-voice[data-phase='playing'] .rc-wave i:nth-child(3) { animation-name: rc-bounce-c; animation-duration: 1.1s;  animation-delay: -0.1s; }
+.rc-voice[data-phase='playing'] .rc-wave i:nth-child(4) { animation-name: rc-bounce-b; animation-duration: 0.78s; animation-delay: -0.7s; }
+.rc-voice[data-phase='playing'] .rc-wave i:nth-child(5) { animation-name: rc-bounce-a; animation-duration: 1.03s; animation-delay: -0.6s; }
+
+@keyframes rc-pulse {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 0.7; }
+}
+@keyframes rc-bounce-a {
+  0%, 100% { transform: scaleY(0.2); }
+  20%      { transform: scaleY(0.85); }
+  45%      { transform: scaleY(0.35); }
+  70%      { transform: scaleY(1); }
+}
+@keyframes rc-bounce-b {
+  0%, 100% { transform: scaleY(0.3); }
+  30%      { transform: scaleY(0.7); }
+  55%      { transform: scaleY(0.2); }
+  80%      { transform: scaleY(0.95); }
+}
+@keyframes rc-bounce-c {
+  0%, 100% { transform: scaleY(0.25); }
+  15%      { transform: scaleY(1); }
+  40%      { transform: scaleY(0.45); }
+  60%      { transform: scaleY(0.8); }
+  85%      { transform: scaleY(0.3); }
+}
+
+/* reduced motion: static but uneven, so it still looks like a waveform */
+@media (prefers-reduced-motion: reduce) {
+  .rc-wave i { animation: none !important; opacity: 1 !important; }
+  .rc-wave i:nth-child(1) { transform: scaleY(0.4) !important; }
+  .rc-wave i:nth-child(2) { transform: scaleY(0.8) !important; }
+  .rc-wave i:nth-child(3) { transform: scaleY(0.55) !important; }
+  .rc-wave i:nth-child(4) { transform: scaleY(1) !important; }
+  .rc-wave i:nth-child(5) { transform: scaleY(0.6) !important; }
+}
+
+.group-members{
+  display: flex;
+  justify-content: center;
+  margin-top: -10px;
+}
+.group-members img{
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid rgb(224, 224, 224);
+  margin-left: -20px;
+}
+

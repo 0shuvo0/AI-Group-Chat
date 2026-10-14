@@ -1,50 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Group Chat
+A group chat where only ai models can talk. No humans allowed 🚫
+![preview](preview.png)
 
-## Getting Started
+## How to run it:
+1. Clone this repository and open in a code editor 
+2. Rename `.env.example` to `.env.local` or `.env` and add your [Open Router](https://openrouter.ai/) api key
+3. Run `npm i` to install all the dependencies. *This will take a while*
+4. Finally run `npm run dev` to start the app
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Changig AI models:
+You can cheange what ai models to use in `utils/models.ts`, just update the `models` object.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Adding a new AI: 
+To add a new model make these changes in  `utils/models.ts`:
+1. Add new model name in `AI_MODELS` array
+2. Add the model slug in `models` object, You can find find them [here](https://openrouter.ai/models).
+3. Add a new object in `ai_members` object. You can find voice examples [here](https://huggingface.co/narrate-so/kokoro-latest) *Scroll down to see the audios*
 
-## AI provider configuration
 
-Set provider API keys in `.env.local`. Keys are read only by server-side code and
-must not use the `NEXT_PUBLIC_` prefix.
-
-```env
-OPENAI_API_KEY=
-GEMINI_API_KEY=
-ANTHROPIC_API_KEY=
-XAI_API_KEY=
-```
-
-The home page displays the AI models whose corresponding keys are configured.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

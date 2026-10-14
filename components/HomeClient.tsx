@@ -7,6 +7,8 @@ import type { AI_MODEL } from '@/utils/models'
 import { ai_members } from '@/utils/models'
 
 const MAX_HISTORY = 20
+const NEXT_MESSAGE_DELAY = 1000
+const MESSAGES_DELAY = 600
 
 
 type Message = {
@@ -19,9 +21,9 @@ type HomeClientProps = {
   availableModels: AI_MODEL[]
 }
 
-const MESSAGES_DELAY = 300
 
 
+const hasWebGPU = typeof navigator !== 'undefined' && 'gpu' in navigator
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -33,6 +35,7 @@ export default function HomeClient({ availableModels }: HomeClientProps) {
   const [theme, setTheme] = useState<string | null>()
   const [stopped, setStopped] = useState(true)
   const [forceStop, setForceStop] = useState(false)
+  const [TTSAILoaded, setTTSAILoaded] = useState(false)
 
   const [messages, setMessages] = useState<Message[]>([])
   const [currentlyTyping, setCurrentlyTyping] = useState<string | null>(null)
@@ -73,11 +76,9 @@ export default function HomeClient({ availableModels }: HomeClientProps) {
           time: (new Date()).toISOString()
         }])
 
-        await delay(2000)
-        setStopped(false)
-      }else{
-        setStopped(false)
       }
+      setStopped(false)
+      
     }catch(err){
       console.error(err)
       setStopped(true)
@@ -87,9 +88,12 @@ export default function HomeClient({ availableModels }: HomeClientProps) {
   }
 
   useEffect(() => {
-    if(stopped || forceStop) return
-    getMessage()
-  }, [stopped, renderingMessages])
+    if (stopped || forceStop || !TTSAILoaded || renderingMessages) return
+
+    // wait a bit after the last bubble finished, then ask for the next message
+    const timer = setTimeout(getMessage, NEXT_MESSAGE_DELAY)
+    return () => clearTimeout(timer)
+  }, [stopped, forceStop, TTSAILoaded, renderingMessages])
 
   useEffect(() => {
     console.log("renderingMessages: " + renderingMessages)
@@ -111,24 +115,20 @@ export default function HomeClient({ availableModels }: HomeClientProps) {
         messageSound="/sound/message.wav"
         messageDelay={MESSAGES_DELAY}
         onLoadingStateChange={setRenderingMessages}
+        onTTSAILoaded={() => setTTSAILoaded(true)}
+        ttsDevice={hasWebGPU ? 'webgpu' : 'wasm'}
+        ttsDtype={hasWebGPU ? 'fp32' : 'q8'}
       />
 
       <button
        className='stop-btn'
        onClick={() => {
-        setForceStop(true);
+        setForceStop(p => !p);
         setCurrentlyTyping(null)
        }}
       >
-        &#x23F9;
+        {forceStop ? '▶' : '⏹'}
       </button>
-
-      { renderingMessages && (<button
-       className='stop-btn'
-       style={{bottom: '150px'}}
-      >
-        ⚙️
-      </button> )}
     </div>
   )
 }

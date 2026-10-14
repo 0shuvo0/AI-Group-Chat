@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const { ai, history, theme } = await request.json() // Parse incoming JSON body
   try{
     const result = await AskAI(ai, history, theme)
+    console.log(result)
     return NextResponse.json({ 
       success: true,
       response: result
